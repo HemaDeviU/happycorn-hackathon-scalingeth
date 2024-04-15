@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import { Inter as FontSans } from "next/font/google";
+import "@/styles/globals.css";
+import { cn } from "@/lib/utils";
+import HeaderComponent from "@/components/shared/header";
+import { Web3Modal } from "@/context/web3modal";
 
-const inter = Inter({ subsets: ["latin"] });
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,8 +21,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased flex flex-col",
+          fontSans.variable
+        )}>
+        <Web3Modal>
+          <HeaderComponent />
+          <main className="flex-1">{children}</main>
+        </Web3Modal>
+      </body>
     </html>
   );
 }
