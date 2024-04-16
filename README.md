@@ -1,4 +1,4 @@
-# graviton-ecommerce-ethglobal
+# HappyCorn-ecommerce-ethglobal
 Ecommerce Dapp for Digital Downloads
 
 An online store for buying digital downloads using any erc20 tokens.
