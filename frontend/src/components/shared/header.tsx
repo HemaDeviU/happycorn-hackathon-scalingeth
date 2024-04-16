@@ -54,7 +54,7 @@ export default function HeaderComponent() {
           </DropdownMenu>
         </div>
 
-        <div className="flex-1 h-12 rounded-full border-2 border-black flex items-center pr-1">
+        <div className="flex-1 h-12 rounded-full border-2 border-secondary-foreground flex items-center pr-1">
           <Input
             placeholder="Search for anything"
             className="flex-1 h-full shadow-none border-none rounded-l-full text-base"
