@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { AlignJustify } from "lucide-react";
+import { AlignJustify, Search } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -59,7 +59,9 @@ export default function HeaderComponent() {
             placeholder="Search for anything"
             className="flex-1 h-full shadow-none border-none rounded-l-full text-base"
           />
-          <Button size="icon" className="rounded-full w-10 h-10"></Button>
+          <Button size="icon" className="rounded-full w-10 h-10">
+            <Search className="w-5 h-5" />
+          </Button>
         </div>
         <ConnectButtonComponent />
       </MaxWrapper>

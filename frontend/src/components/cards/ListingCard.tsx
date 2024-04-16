@@ -7,7 +7,7 @@ import { Heart } from "lucide-react";
 export default function ListingCard({ id }: { id: number }) {
   return (
     <Link
-      href={`/market/${id}`}
+      href={`/listing/${id}`}
       className="w-full rounded-lg border shadow bg-background relative">
       <AspectRatio ratio={16 / 11} className="bg-muted">
         <Image
