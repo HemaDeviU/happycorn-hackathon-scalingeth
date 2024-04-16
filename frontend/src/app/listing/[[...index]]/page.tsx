@@ -27,12 +27,14 @@ export default function ListingPage() {
                 "text-2xl md:text-3xl font-medium",
                 polyFont.className
               )}>
-              A selected NFT
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Voluptas, ipsam.
             </h1>
             <p className="text-base mt-1 mb-2">
-              Faceless Portrait, custom illustration, personalised photo, photo
-              illustration, personalised portrait, boyfriend gift, girlfriend
-              gift
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio,
+              delectus autem nobis, veritatis, perferendis doloribus debitis
+              odit molestias id impedit rerum nam eos porro. Velit inventore
+              eveniet ex excepturi consectetur!
             </p>
             <p className="text-base md:text-xl font-bold text-green-600 mb-2">
               USD 5.40
@@ -43,11 +45,19 @@ export default function ListingPage() {
               Arrives soon! Get it by Apr 17-23 if you order today
             </p>
 
-            <Button
-              size="lg"
-              className="w-full rounded-full h-12 uppercase font-semibold">
-              Add to Cart
-            </Button>
+            <div className="flex flex-col gap-4">
+              <Button
+                size="lg"
+                className="w-full rounded-full h-12 uppercase font-semibold border-2 border-secondary-foreground/25"
+                variant="outline">
+                Add to Cart
+              </Button>
+              <Button
+                size="lg"
+                className="w-full rounded-full h-12 uppercase font-semibold">
+                Buy Now
+              </Button>
+            </div>
           </div>
         </div>
       </MaxWrapper>
