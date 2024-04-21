@@ -6,18 +6,16 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract HappyCorn is ReentrancyGuard, ERC721 {
-    address private owner;
+contract HappyCorn is Ownable,ReentrancyGuard, ERC721 {
     uint256 constant MAXDELIVERYTIME = 24 hours;
-    // uint256 constant FEE_NUMERATOR = 1;
-    // uint256 constant FEE_DENOMINATOR = 200;
+    uint256 constant FEE_NUMERATOR = 1;
+    uint256 constant FEE_DENOMINATOR = 200;
     uint256 private itemIdCounter;
-    uint256 private OrderId;
 
     struct Item {
         uint256 id;
         string name;
-        bytes32[2] imageurls;
+        string[3] imageIPFSHashes;
         uint256 price;
         address payable seller;
         bool isCustom;
@@ -36,19 +34,18 @@ contract HappyCorn is ReentrancyGuard, ERC721 {
     mapping(uint256 => Item) public items;
     mapping(address => uint256) public balances;
     mapping(uint256 => Order) public orders;
-    mapping(address => uint256[]) addressToOrderItem; // address to orderIds
 
     event CreatedItem(uint256 indexed id, address indexed seller);
     event RemovedItem(uint256 indexed id);
     event BalanceWithdrawn(address indexed seller, uint256 indexed amount);
     event OrderedItem(uint256 indexed id, address indexed buyer, address indexed seller);
-    event DeliveredItem(uint256 indexed id, address indexed buyer, address indexed seller);
+    event DeliveredItem(string indexed deliveryHash, address indexed buyer, address  indexed seller, uint256 id);
     event RefundedOrder(uint256 indexed id, address indexed buyer, address indexed seller);
-    event PurchaseCompleted(uint256 indexed id, address indexed buyer);
-    event NFTMinted(uint256 indexed tokenId, address indexed to);
+    event PurchaseCompleted(uint256 indexed id, string deliveryhash, address indexed buyer);
+    event NFTMinted(uint256 indexed tokenId, address indexed to, uint256 itemid);
 
-    constructor() ERC721("HappyCorn", "HAPPY") {
-        owner = msg.sender;
+    constructor() Ownable(msg.sender) ERC721("HappyCorn", "HAPPY") {
+       
     }
 
     modifier onlySeller(uint256 _itemId) {
@@ -57,27 +54,25 @@ contract HappyCorn is ReentrancyGuard, ERC721 {
     }
 
     function updateowner(address _newowner) external {
-        require(msg.sender == owner, "Only owner can call this function");
-        owner = _newowner;
+        transferOwnership(_newowner);
     }
 
     // Done
     function createItem(
         string memory _name,
-        bytes32[] memory _imageurls,
+        string[3] memory _imageIPFSHashes,
         uint256 _price,
         bool _isCustom,
-        uint256 _deliveryTime
+        uint160 _deliveryTime
     ) external {
         require(bytes(_name).length > 0 && _price > 0, "Inputs must be non-zero");
-        require(_imageurls.length > 0 && _imageurls.length <= 3, "Inavlid number of hashes");
         require(_deliveryTime <= MAXDELIVERYTIME, "Invalid delivery time");
         itemIdCounter++;
         if (_isCustom) {
             items[itemIdCounter] = Item({
                 id: itemIdCounter,
                 name: _name,
-                imageurls: _imageurls[],
+                imageIPFSHashes: _imageIPFSHashes,
                 price: _price,
                 seller: payable(msg.sender),
                 isCustom: _isCustom,
@@ -87,7 +82,7 @@ contract HappyCorn is ReentrancyGuard, ERC721 {
             items[itemIdCounter] = Item({
                 id: itemIdCounter,
                 name: _name,
-                imageurls: _imageurls[],
+                imageIPFSHashes: _imageIPFSHashes,
                 price: _price,
                 seller: payable(msg.sender),
                 isCustom: _isCustom,
@@ -109,40 +104,36 @@ contract HappyCorn is ReentrancyGuard, ERC721 {
         require(amount > 0, "no balance to withdraw");
         balances[msg.sender] = 0;
         emit BalanceWithdrawn(msg.sender, amount);
+        (bool success, ) = msg.sender.call{value:amount}("");
+        require(success, "Withdrawal failes");
 
-        payable(msg.sender).transfer(amount);
+        
     }
     //non-custommade purchase
 
-    function BuyItem(uint256 itemId) public payable nonReentrant {
+    function BuyItem(uint256 itemId) external payable nonReentrant {
         Item storage item = items[itemId];
         require(msg.value >= item.price);
 
-        if (item.isCustom) {
-            BuyCustomItem(itemId);
-        } else {
-            uint256 feeAmount = (msg.value * 1) / 200;
+            uint256 feeAmount = (msg.value * FEE_NUMERATOR) / FEE_DENOMINATOR;
             balances[msg.sender] = msg.value - feeAmount;
+            string memory deliveryhash = item.imageIPFSHashes[2];
+            emit PurchaseCompleted(itemId, deliveryhash,msg.sender);
+
         }
 
-        // emit the product hash
-        // emit PurchaseCompleted(itemId, msg.sender);
-    }
 
     //custompurchase
-    function BuyCustomItem(uint256 _itemId) internal payable {
+    function BuyCustomItem(uint256 _itemId) external payable {
         Item storage item = items[_itemId];
         require(msg.value >= item.price, "Incorrect amount sent");
         require(item.isCustom, "This not a custom product");
 
-        Order memory order = Order(_itemId, payable(msg.sender), item.seller, "", false, block.timestamp);
-        uint256 feeAmount = (msg.value * 1) / 200;
-        balances[msg.sender] += (msg.value - feeAmount);
-
-        emit OrderedItem(_itemId, msg.sender, item.seller);
+        Order memory order = Order(_itemId, payable(msg.sender), item.seller,"", false, block.timestamp);
+        emit OrderedItem(order.itemId, msg.sender, item.seller);
     }
 
-    function deliverItem(uint256 _itemId, string memory _deliveryHash) external {
+    function deliverItem(uint256 _itemId, string memory _deliveryHash) external payable {
         Order storage order = orders[_itemId];
         require(order.seller == msg.sender, "Not the seller");
         require(!order.delivered);
@@ -150,54 +141,64 @@ contract HappyCorn is ReentrancyGuard, ERC721 {
 
         order.delivered = true;
         order.deliveryHash = _deliveryHash;
-        emit DeliveredItem(_itemId, order.buyer, msg.sender); // emit the deliverHash here
+        emit DeliveredItem(_deliveryHash, order.buyer, order.seller,_itemId); 
+        uint256 feeAmount = (msg.value * FEE_NUMERATOR) / FEE_DENOMINATOR;
+        balances[msg.sender] = msg.value - feeAmount;
     }
 
-    function refundOrder(uint256 _itemId) external { // only owner when the order is not delivered within time
-        Order storage order = orders[_itemId];
+    function refundOrder(uint256 _itemId) external { 
+         Order storage order = orders[_itemId];
         require(order.buyer == msg.sender);
-        order.refundedelivered = false;
+        require(order.delivered == false);
+        order.delivered = true;
         order.buyer.transfer(items[_itemId].price);
         emit RefundedOrder(_itemId, order.buyer, order.seller);
     }
      // stucked here
     function mintNFT(uint256 _itemId, string memory deliveryhash) external nonReentrant {
-        Order storage order = Order[_itemId];
+        Order storage order = orders[_itemId];
         require(order.buyer == msg.sender);
         require(order.delivered);
+        uint256 tokenId = uint256(keccak256(abi.encodePacked(deliveryhash, block.timestamp)));
 
-        _safeMint(msg.sender, deliveryhash);
-        emit NFTMinted(deliveryhash, msg.sender);
+
+        _safeMint(msg.sender, tokenId);
+        emit NFTMinted(tokenId, msg.sender, _itemId);
     }
 
     //reads
     function getItemDetails(uint256 id)
-        public
+        public view
         returns (
             string memory name,
-            bytes32[2] memory imageurls,
+            string[3] memory imageIPFSHashes,
             uint256 price,
             address seller,
             bool isCustom,
-            bool active,
             uint160 deliveryTime
         )
     {
         Item memory item = items[id];
         return (
             item.name,
-            item.imageurls,
-            item.price,
+            item.imageIPFSHashes,
             item.price,
             item.seller,
             item.isCustom,
-            item.active,
             item.deliveryTime
         );
     }
 
-    function getsellerbalance(address seller) external {
+    function getsellerbalance(address seller) external view returns (uint256) {
         require(msg.sender == seller);
         return balances[seller];
     }
+    function getAllItems() external view returns (Item[] memory) {
+    Item[] memory allItems = new Item[](itemIdCounter);
+    for (uint256 i = 1; i <= itemIdCounter; i++) {
+        allItems[i - 1] = items[i];
+    }
+    return allItems;
+}
+
 }
