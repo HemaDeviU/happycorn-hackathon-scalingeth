@@ -10,10 +10,10 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 
-export const polyFont = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700"],
-});
+// export const polyFont = Noto_Serif({
+//   subsets: ["latin"],
+//   weight: ["100", "200", "300", "400", "500", "600", "700"],
+// });
 
 export const metadata: Metadata = {
   title: "Etsy",
