@@ -1,7 +1,7 @@
 "use client";
 
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers/react";
-export const SUPPORTED_CHAIN = 11155111;
+export const SUPPORTED_CHAIN = 421614;
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
@@ -11,8 +11,8 @@ const sepolia = {
   chainId: SUPPORTED_CHAIN,
   name: "Sepolia",
   currency: "Eth",
-  explorerUrl: "https://mumbai.polygonscan.com",
-  rpcUrl: process.env.NEXT_PUBLIC_RPC_URL as string,
+  explorerUrl: "https://sepolia.arbiscan.io/",
+  rpcUrl: "https://sepolia-rollup.arbitrum.io/rpc,"
 };
 
 // 3. Create a metadata object

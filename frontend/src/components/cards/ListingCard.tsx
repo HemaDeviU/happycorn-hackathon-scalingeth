@@ -4,14 +4,14 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { Heart } from "lucide-react";
 
-export default function ListingCard({ id }: { id: number }) {
+export default function ListingCard({ id, item }: { id: number, item :any }) {
   return (
     <Link
       href={`/listing/${id}`}
       className="w-full rounded-lg border shadow bg-background relative">
       <AspectRatio ratio={16 / 11} className="bg-muted">
         <Image
-          src="https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
+          src={item.image}
           alt="Photo by Drew Beamer"
           fill
           className="rounded-md object-cover"
@@ -27,7 +27,7 @@ export default function ListingCard({ id }: { id: number }) {
         </Button>
 
         <div className="py-2 px-4 text-xs font-semibold bg-background rounded-full w-max">
-          USD 14.99{" "}
+          USD {item.price}
           <span className="font-normal line-through ml-1">USD 16.99</span>
         </div>
       </div>
