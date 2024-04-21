@@ -10,7 +10,7 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 
-export const polyFont = FontSans({
+const polyFont = FontSans({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700"],
 });
