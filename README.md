@@ -7,6 +7,10 @@ Customers can browse listings are buy non-custommade products and get instant de
 
 Happy Corn enables anyone to buy digital products with ETH.
 
+Deployed on Arbitrum Sepolia : 0xC5026d20C2Aa8cA173b2F8576E5D01aBa17b4752
+https://stylus-testnet-explorer.arbitrum.io/address/0xC5026d20C2Aa8cA173b2F8576E5D01aBa17b4752
+
+
 ## Roles
 
 - **Customer:** Individuals who browse, purchase, and download digital products from Happy Corn.
