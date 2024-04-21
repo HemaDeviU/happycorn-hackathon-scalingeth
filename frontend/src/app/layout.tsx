@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Open_Sans as FontSans, Noto_Serif } from "next/font/google";
+import { Noto_Serif as FontSans } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import HeaderComponent from "@/components/shared/header";
@@ -10,10 +10,10 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 
-// export const polyFont = Noto_Serif({
-//   subsets: ["latin"],
-//   weight: ["100", "200", "300", "400", "500", "600", "700"],
-// });
+export const polyFont = FontSans({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Etsy",
@@ -31,7 +31,8 @@ export default function RootLayout({
         className={cn(
           "min-h-screen bg-background font-sans antialiased flex flex-col",
           fontSans.variable
-        )}>
+        )}
+      >
         <Web3Modal>
           <HeaderComponent />
           <main className="flex-1">{children}</main>
