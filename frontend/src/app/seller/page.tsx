@@ -1,9 +1,10 @@
 "use client";
 
 import MaxWrapper from "@/components/shared/max-wrapper";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
 import React, { useState } from "react";
 
 export default function SellerPage() {
@@ -109,9 +110,16 @@ export default function SellerPage() {
             </div>
           </div>
 
-          <Button type="submit" onClick={handleSubmit} className="w-full">
+          <Link
+            href="/listing/1"
+            type="submit"
+            onClick={handleSubmit}
+            className={buttonVariants({
+              className: "w-full",
+            })}
+          >
             Submit
-          </Button>
+          </Link>
         </form>
       </MaxWrapper>
     </div>
