@@ -4,53 +4,57 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { ethers } from 'ethers';
+import { ethers, id } from "ethers";
 
-export default function ListingPage() {
-
-  async function buyProduct(contractAddress, abi, arg1, arg2) {
+export default function ListingPage({ params }: { params: { slug: string } }) {
+  async function buyProduct({
+    contractAddress,
+    abi,
+    arg1,
+    arg2,
+  }: {
+    contractAddress: string;
+    abi: any;
+    arg1: any;
+    arg2: any;
+  }) {
     let signer = null;
 
-let provider;
-if (window.ethereum == null) {
+    let provider;
+    if (window.ethereum == null) {
+      // If MetaMask is not installed, we use the default provider,
+      // which is backed by a variety of third-party services (such
+      // as INFURA). They do not have private keys installed,
+      // so they only have read-only access
+      console.log("MetaMask not installed; using read-only defaults");
+      provider = ethers.getDefaultProvider();
+    } else {
+      // Connect to the MetaMask EIP-1193 object. This is a standard
+      // protocol that allows Ethers access to make all read-only
+      // requests through MetaMask.
+      provider = new ethers.BrowserProvider((window as any).ethereum);
 
-    // If MetaMask is not installed, we use the default provider,
-    // which is backed by a variety of third-party services (such
-    // as INFURA). They do not have private keys installed,
-    // so they only have read-only access
-    console.log("MetaMask not installed; using read-only defaults")
-    provider = ethers.getDefaultProvider()
+      // It also provides an opportunity to request access to write
+      // operations, which will be performed by the private key
+      // that MetaMask manages for the user.
+      signer = await provider.getSigner();
+    }
 
-} else {
-
-    // Connect to the MetaMask EIP-1193 object. This is a standard
-    // protocol that allows Ethers access to make all read-only
-    // requests through MetaMask.
-    provider = new ethers.BrowserProvider(window.ethereum)
-
-    // It also provides an opportunity to request access to write
-    // operations, which will be performed by the private key
-    // that MetaMask manages for the user.
-    signer = await provider.getSigner();
-}
-  
     try {
-  
       // Connect to the contract using its address and ABI
       const contract = new ethers.Contract(contractAddress, abi, signer);
-  
+
       // Example: Call a state-changing function (requires gas)
       const tx = await contract.BuyItem(1);
       await tx.wait(); // Wait for the transaction to be mined
-      console.log('Transaction successful:', tx.hash);
-  
+      console.log("Transaction successful:", tx.hash);
     } catch (error) {
-      console.error('Error interacting with contract:', error);
+      console.error("Error interacting with contract:", error);
     }
   }
-  
-  
 
+  // fetch the data from the params.slug
+  console.log(params.slug);
   return (
     <div className="flex-col">
       <MaxWrapper className="py-10">
@@ -60,7 +64,8 @@ if (window.ethereum == null) {
               {Array.from({ length: 4 }).map((_, _key) => (
                 <div
                   className="bg-secondary rounded h-24 aspect-[1.2]"
-                  key={_key}></div>
+                  key={_key}
+                ></div>
               ))}
             </div>
             <div className="h-[600px] aspect-square bg-secondary"></div>
@@ -71,7 +76,8 @@ if (window.ethereum == null) {
               className={cn(
                 "text-2xl md:text-3xl font-medium",
                 polyFont.className
-              )}>
+              )}
+            >
               Lorem ipsum dolor sit amet, consectetur adipisicing elit.
               Voluptas, ipsam.
             </h1>
@@ -94,12 +100,14 @@ if (window.ethereum == null) {
               <Button
                 size="lg"
                 className="w-full rounded-full h-12 uppercase font-semibold border-2 border-secondary-foreground/25"
-                variant="outline">
+                variant="outline"
+              >
                 Add to Cart
               </Button>
               <Button
                 size="lg"
-                className="w-full rounded-full h-12 uppercase font-semibold">
+                className="w-full rounded-full h-12 uppercase font-semibold"
+              >
                 Buy Now
               </Button>
             </div>
