@@ -1,6 +1,5 @@
-# HappyCorn-ecommerce-ethglobal
-Ecommerce Dapp for Digital Products
-# Introduction
+# HappyCorn-ecommerce-ethglobal - Ecommerce Dapp for Digital Products
+
 
 Happy Corn is an innovative e-commerce platform designed to revolutionize the way digital products are bought and sold by anyone. Leveraging the power of blockchain  and cryptocurrency, Happy Corn provides a secure and efficient marketplace for users to browse, purchase, and sell a wide range of digital products by small artists without a need for complex documentation or heavy hidden fees.
 
