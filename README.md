@@ -1,5 +1,5 @@
 # HappyCorn-Ecommerce Dapp for Digital Products
-**Currently, Enjoying the Arbitrum Pool Prize from the Hackathon. Help me get this project live by sponsoring our team. Open to grants** 🙌🏾🏆✨
+**Won the Arbitrum Pool Prize from the Hackathon. Help me get this project live by sponsoring our team. Open to grants** 🙌🏾🏆✨
 
 Happy Corn is an innovative e-commerce platform designed to revolutionize the way digital products are bought and sold by anyone. Leveraging the power of blockchain  and cryptocurrency, Happy Corn provides a secure and efficient marketplace for users to browse, purchase, and sell a wide range of digital products by small artists without a need for complex documentation or heavy hidden fees.
 
@@ -7,7 +7,7 @@ Customers can browse listings are buy non-custommade products and get instant de
 
 Happy Corn enables anyone to buy digital products with ETH.
 
-Deployed on Arbitrum Sepolia : 0xC5026d20C2Aa8cA173b2F8576E5D01aBa17b4752
+**Deployed on Arbitrum Stylus Testnet** : 0xC5026d20C2Aa8cA173b2F8576E5D01aBa17b4752
 https://stylus-testnet-explorer.arbitrum.io/address/0xC5026d20C2Aa8cA173b2F8576E5D01aBa17b4752
 
 
